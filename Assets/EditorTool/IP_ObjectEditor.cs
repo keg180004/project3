@@ -114,7 +114,7 @@ namespace ObjectEditor.Tools
             GUILayout.Space(5);
 
             //replacing button
-            wantedObject = (GameObject)EditorGUILayout.ObjectField("Original Object: ", wantedObject, typeof(GameObject), true);
+            wantedObject = (GameObject)EditorGUILayout.ObjectField("New Object: ", wantedObject, typeof(GameObject), true);
             if(GUILayout.Button("Replace Selected Objects", GUILayout.ExpandWidth(true), GUILayout.Height(40)))
             {
                 ReplaceObjects();
@@ -189,9 +189,20 @@ namespace ObjectEditor.Tools
 
         void ReplaceObjects()
         {
-            if(currentSelectionCount == 0)
+            if(!wantedObject)
             {
-                EditorUtility.DisplayDialog("Replace Objects Warning", "At least one object needs to be selected to replace with!", "OK");
+                EditorUtility.DisplayDialog("Replace Objects Warning", "New object is missing, please assign something!", "OK");
+                return;
+            }
+
+            GameObject[] selectedObjects = Selection.gameObjects;
+            for(int i = 0; i < selectedObjects.Length; i++)
+            {
+                Transform selectTransform = selectedObjects[i].transform;
+                GameObject newObject = Instantiate(wantedObject, selectTransform.position, selectTransform.rotation);
+                newObject.transform.localScale = selectTransform.localScale;
+
+                DestroyImmediate(selectedObjects[i]);
             }
         }
         #endregion
