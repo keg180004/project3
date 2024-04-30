@@ -20,6 +20,9 @@ namespace ObjectEditor.Tools
         //grouping vars
         string wantedGroup = "Enter Group Name";
         int currentSelectionCount;
+
+        //replacing vars
+        GameObject wantedObject;
         #endregion
 
         #region Builtin Methods
@@ -33,49 +36,57 @@ namespace ObjectEditor.Tools
 
         private void OnGUI()
         {
-            //renamer section
             //get current selected objects
             selected = Selection.gameObjects;
             EditorGUILayout.LabelField("Selected: " + selected.Length.ToString("000"));
-
-            //display our user UI
+            
+            //renamer section
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(10);
-
             EditorGUILayout.BeginVertical();
             GUILayout.Space(10);
-
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             GUILayout.Space(10);
 
+            //UI
+            EditorGUILayout.LabelField("Rename Objects", EditorStyles.boldLabel);
+            EditorGUILayout.BeginVertical();
+            GUILayout.Space(5);
             wantedPrefix = EditorGUILayout.TextField("Prefix: ", wantedPrefix, EditorStyles.miniTextField, GUILayout.ExpandWidth(true));
             wantedName = EditorGUILayout.TextField("Name: ", wantedName, EditorStyles.miniTextField, GUILayout.ExpandWidth(true));
             wantedSuffix = EditorGUILayout.TextField("Suffix: ", wantedSuffix, EditorStyles.miniTextField, GUILayout.ExpandWidth(true));
             addNumbering = EditorGUILayout.Toggle("Add Numbering? ", addNumbering);
 
-            GUILayout.Space(10);
-            EditorGUILayout.EndVertical();
-            
+            //rename button
             if(GUILayout.Button("Rename Selected Objects", GUILayout.Height(45), GUILayout.ExpandWidth(true)))
             {
-                RenameObject();
+                RenameObjects();
             }
             GUILayout.Space(10);
-             EditorGUILayout.EndVertical();
-
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndVertical();
+            GUILayout.Space(10);
+            EditorGUILayout.EndVertical();
             GUILayout.Space(10);
             EditorGUILayout.EndHorizontal();
 
             //grouping section
             EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.Space(4/5);
+
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             EditorGUILayout.Space(10);
 
+            EditorGUILayout.LabelField("Group Objects", EditorStyles.boldLabel);
+            EditorGUILayout.BeginHorizontal();
             EditorGUILayout.BeginVertical();
-            EditorGUILayout.Space(10);
-
-            EditorGUILayout.LabelField("Group Name", EditorStyles.boldLabel);
+            GUILayout.Space(5);
+            EditorGUILayout.LabelField("Group Name");
             wantedGroup = EditorGUILayout.TextField(wantedGroup);
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
 
+            //grouping button
             if(GUILayout.Button("Group Selected Objects", GUILayout.ExpandWidth(true), GUILayout.Height(45)))
             {
                 GroupObjects();
@@ -84,7 +95,40 @@ namespace ObjectEditor.Tools
             EditorGUILayout.Space(10);
             EditorGUILayout.EndVertical();
 
-             EditorGUILayout.Space(10);
+            EditorGUILayout.Space(4/5);
+            EditorGUILayout.EndHorizontal();
+
+            //replacing section
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.Space(4/5);
+
+            EditorGUILayout.BeginVertical();
+            GUILayout.Space(15);
+
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            EditorGUILayout.Space(10);
+
+            //UI
+            EditorGUILayout.LabelField("Replace Objects", EditorStyles.boldLabel);
+            EditorGUILayout.BeginVertical();
+            GUILayout.Space(5);
+
+            //replacing button
+            wantedObject = (GameObject)EditorGUILayout.ObjectField("Original Object: ", wantedObject, typeof(GameObject), true);
+            if(GUILayout.Button("Replace Selected Objects", GUILayout.ExpandWidth(true), GUILayout.Height(40)))
+            {
+                ReplaceObjects();
+            }
+
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.Space(10);
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.Space(10);
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.Space(4/5);
             EditorGUILayout.EndHorizontal();
 
             Repaint();
@@ -92,7 +136,7 @@ namespace ObjectEditor.Tools
         #endregion
 
         #region Custom Methods
-        void RenameObject()
+        void RenameObjects()
         {
             Array.Sort(selected, delegate(GameObject objA, GameObject objB){return objA.name.CompareTo(objB.name);});
             
@@ -141,7 +185,15 @@ namespace ObjectEditor.Tools
                     EditorUtility.DisplayDialog("Grouper Message", "You must provide a name for your group!", "OK");
                 }
         }
+        }
+
+        void ReplaceObjects()
+        {
+            if(currentSelectionCount == 0)
+            {
+                EditorUtility.DisplayDialog("Replace Objects Warning", "At least one object needs to be selected to replace with!", "OK");
+            }
+        }
         #endregion
     }
-}
 }
