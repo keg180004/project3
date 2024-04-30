@@ -7,7 +7,7 @@ namespace ObjectEditor.Tools
 {
     public class IP_Editor_Menu 
     {
-        [MenuItem("Object Editor/Level/Tools/ObjectEditor #e")]
+        [MenuItem("Object Editor/Level Tools/ObjectEditor #e")]
         public static void EditSelectedObjects()
         {
             IP_ObjectEditor.LaunchEditor();
