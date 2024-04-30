@@ -10,11 +10,16 @@ namespace ObjectEditor.Tools
     {
         #region Variables
         GameObject[] selected = new GameObject[0];
+
+        //renaming vars
         string wantedPrefix;
         string wantedName;
         string wantedSuffix;
-        string wantedGroup;
         bool addNumbering;
+
+        //grouping vars
+        string wantedGroup = "Enter Group Name";
+        int currentSelectionCount;
         #endregion
 
         #region Builtin Methods
@@ -73,7 +78,7 @@ namespace ObjectEditor.Tools
 
             if(GUILayout.Button("Group Selected Objects", GUILayout.ExpandWidth(true), GUILayout.Height(45)))
             {
-                Debug.Log("Grouping Selected!");
+                GroupObjects();
             }
 
             EditorGUILayout.Space(10);
@@ -117,6 +122,26 @@ namespace ObjectEditor.Tools
                 selected[i].name = finalName;
             }
         }
+
+        void GroupObjects()
+        {
+            if(selected.Length > 0)
+            {
+                if(wantedGroup != "Enter Group Name")
+                {
+                    GameObject groupGO = new GameObject(wantedGroup + "_GRP");
+
+                    foreach(GameObject curgo in selected)
+                    {
+                        curgo.transform.SetParent(groupGO.transform);
+                    }
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("Grouper Message", "You must provide a name for your group!", "OK");
+                }
+        }
         #endregion
     }
+}
 }
